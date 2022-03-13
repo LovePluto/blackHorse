@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @ControllerAdvice
 @Slf4j
@@ -22,7 +23,14 @@ public class GlobalException {
     @ExceptionHandler(TicketException.class)
     @ResponseStatus(code = CONFLICT)
     public ResponseBody handlerTicketException(TicketException e) {
-        log.error("unknown error!", e);
+        log.error("ticket failed!", e);
         return new ResponseBody(4001, e.getMessage());
+    }
+
+    @ExceptionHandler(ThirdException.class)
+    @ResponseStatus(code = SERVICE_UNAVAILABLE)
+    public ResponseBody handlerTicketException(ThirdException e) {
+        log.error("third system unavailable !", e);
+        return new ResponseBody(5002, e.getMessage());
     }
 }
