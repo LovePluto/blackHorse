@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 
 import static com.wyh.dark_horse.bookticket.model.TicketStatus.CONFIRM;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +32,7 @@ class BookTicketServiceTest {
 
 
     @Test
-    public void should_create_book_ticket_successfully() {
+    public void should_book_ticket_successfully() {
         Ticket ticket = new Ticket();
         BookResult bookResult = BookResult.builder()
                 .result(true)
@@ -47,5 +48,18 @@ class BookTicketServiceTest {
         assertThat(ticket.getConfirmId()).isEqualTo("id");
         assertThat(ticket.getPrice()).isEqualTo(new BigDecimal("22"));
         verify(ticketRepository, times(2)).save(any());
+    }
+
+    @Test
+    public void should_book_ticket_failed() {
+        Ticket ticket = new Ticket();
+        BookResult bookResult = BookResult.builder()
+                .result(false)
+                .errorMessage("预订机票失败")
+                .build();
+        when(flightClient.bookTicket(any())).thenReturn(bookResult);
+
+        assertThatThrownBy(() -> bookTicketService.create(ticket)).hasMessage("预订机票失败");
+
     }
 }
