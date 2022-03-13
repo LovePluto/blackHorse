@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class BookTicketDto {
     private String flightNumber;
-    private String number;
+    private Integer number;
 
     public Ticket toDomain() {
         final Ticket bookTicket = new Ticket();

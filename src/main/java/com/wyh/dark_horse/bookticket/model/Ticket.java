@@ -1,16 +1,20 @@
 package com.wyh.dark_horse.bookticket.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ticket {
     private String id;
     private String flightNumber;
-    private String number;
+    private Integer number;
     private BigDecimal price;
     private String confirmId;
     private LocalDateTime createdAt;

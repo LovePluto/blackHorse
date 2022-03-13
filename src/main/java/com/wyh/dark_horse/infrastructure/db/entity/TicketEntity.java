@@ -23,7 +23,7 @@ public class TicketEntity {
     @Id
     private String id;
     private String flightNumber;
-    private String number;
+    private Integer number;
     private BigDecimal price;
     private String confirmId;
     private LocalDateTime createdAt;
