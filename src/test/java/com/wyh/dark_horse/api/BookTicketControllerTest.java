@@ -70,7 +70,7 @@ class BookTicketControllerTest {
     }
 
     @Test
-    public void should_book_tickets_failed() {
+    public void should_book_tickets_failed_when_ticket_is_not_enough() {
         BookTicketDto request = new BookTicketDto();
         request.setNumber(1);
         request.setFlightNumber("flightNumber");
@@ -89,5 +89,24 @@ class BookTicketControllerTest {
                 .statusCode(409)
                 .body("code", is(4001))
                 .body("errorMessage", is("预订机票失败"));
+    }
+
+    @Test
+    public void should_book_tickets_failed_when_third_system_is_unavailable() {
+        BookTicketDto request = new BookTicketDto();
+        request.setNumber(1);
+        request.setFlightNumber("flightNumber");
+
+        when(flightFeignClient.bookTicket(any())).thenThrow(new Exception());
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/book/tickets")
+                .then()
+                .statusCode(503)
+                .body("code", is(5002))
+                .body("errorMessage", is("预订机票失败，请稍后重试或拨打电话 123456"));
     }
 }
