@@ -4,5 +4,5 @@ import com.wyh.dark_horse.bookticket.model.BookResult;
 import com.wyh.dark_horse.bookticket.model.Ticket;
 
 public interface FlightClient {
-    BookResult bookTicket(Ticket bookTicket);
+    BookResult bookTicket(Ticket ticket);
 }
