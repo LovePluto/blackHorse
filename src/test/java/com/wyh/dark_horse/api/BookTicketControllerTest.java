@@ -23,6 +23,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
@@ -66,5 +67,27 @@ class BookTicketControllerTest {
                 .post("/book/tickets")
                 .then()
                 .statusCode(200);
+    }
+
+    @Test
+    public void should_book_tickets_failed() {
+        BookTicketDto request = new BookTicketDto();
+        request.setNumber(1);
+        request.setFlightNumber("flightNumber");
+        BookResult bookResult = BookResult.builder()
+                .result(false)
+                .errorMessage("预订机票失败")
+                .build();
+        when(flightFeignClient.bookTicket(any())).thenReturn(bookResult);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/book/tickets")
+                .then()
+                .statusCode(409)
+                .body("code", is(4001))
+                .body("errorMessage", is("预订机票失败"));
     }
 }
