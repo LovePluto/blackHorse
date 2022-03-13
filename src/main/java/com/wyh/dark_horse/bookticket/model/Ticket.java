@@ -1,5 +1,6 @@
 package com.wyh.dark_horse.bookticket.model;
 
+import com.wyh.dark_horse.infrastructure.exception.TicketException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,10 +28,14 @@ public class Ticket {
     }
 
     public void update(BookResult bookResult) {
-        if (bookResult.getResult()) {
-            this.price = new BigDecimal(bookResult.getPrice());
-            this.status = TicketStatus.CONFIRM;
-            this.confirmId = bookResult.getId();
+        if (!bookResult.getResult()) {
+            throw new TicketException(bookResult.getErrorMessage());
         }
+
+        this.price = new BigDecimal(bookResult.getPrice());
+        this.status = TicketStatus.CONFIRM;
+        this.confirmId = bookResult.getId();
+
     }
+
 }
